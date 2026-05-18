@@ -1,4 +1,13 @@
 const DEFAULT_STARPI_URL = "http://localhost:1337"
+export const AUTH_COOKIE_NAME = "strapi_jwt"
+
+export type StrapiUser = {
+    id: number, username: string, email: string
+}
+
+export type StrapiAuthResponse = {
+    jwt: string, user: StrapiUser
+}
 
 export class StrapiError extends Error {
     status: number
@@ -36,15 +45,19 @@ async function strapiFetch<T>(path: string, init: RequestInit = {}, jwt?: string
 }
 
 export function registerWithStrapi(username: string, email: string, password: string) {
-    return strapiFetch("/api/auth/local/register", {
+    return strapiFetch<StrapiAuthResponse>("/api/auth/local/register", {
         method: "POST",
         body: JSON.stringify({ username, email, password })
     })
 }
 
 export function loginWithStrapi(identifier: string, password: string) {
-    return strapiFetch("/api/auth/local/", {
+    return strapiFetch<StrapiAuthResponse>("/api/auth/local/", {
         method: "POST",
         body: JSON.stringify({ identifier, password })
     })
+}
+
+export function fetchCurrentUser(jwt: string) {
+    return strapiFetch("/api/user/me", {}, jwt)
 }
