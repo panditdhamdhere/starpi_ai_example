@@ -36,5 +36,15 @@ async function strapiFetch<T>(path: string, init: RequestInit = {}, jwt?: string
 }
 
 export function registerWithStrapi(username: string, email: string, password: string) {
-return strapiFetch("/api/auth/local/register")
-} 
+    return strapiFetch("/api/auth/local/register", {
+        method: "POST",
+        body: JSON.stringify({ username, email, password })
+    })
+}
+
+export function loginWithStrapi(identifier: string, password: string) {
+    return strapiFetch("/api/auth/local/", {
+        method: "POST",
+        body: JSON.stringify({ identifier, password })
+    })
+}
