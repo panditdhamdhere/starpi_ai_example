@@ -45,7 +45,6 @@ export async function getCurrentUser() {
 
 export async function requireAuth(redirectTo = "/login") {
   const user = await getCurrentUser();
-  console.log(user);
 
   if (!user) {
     redirect(redirectTo);

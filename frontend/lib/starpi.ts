@@ -28,7 +28,7 @@ async function strapiFetch<T>(path: string, init: RequestInit = {}, jwt?: string
 
 
     if (jwt) {
-        headers.set("Authorization", `Beader ${jwt}`)
+        headers.set("Authorization", `Bearer ${jwt}`)
     }
 
     const response = await fetch(`${DEFAULT_STARPI_URL}${path}`, {
@@ -59,5 +59,5 @@ export function loginWithStrapi(identifier: string, password: string) {
 }
 
 export function fetchCurrentUser(jwt: string) {
-    return strapiFetch("/api/user/me", {}, jwt)
+    return strapiFetch("/api/users/me", {}, jwt)
 }

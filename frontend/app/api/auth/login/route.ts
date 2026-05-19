@@ -7,7 +7,7 @@ export async function POST(request: Request) {
         const body = await request.json();
 
         const auth = loginWithStrapi(
-            String(body.idenfier ?? ""),
+            String(body.identifier ?? ""),
             String(body.password ?? "")
         )
 

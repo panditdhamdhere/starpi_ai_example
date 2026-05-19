@@ -1,3 +1,4 @@
+import { DashboardShell } from '@/components/dashboard/DashboardShell'
 import { requireAuth } from '@/lib/auth'
 import React from 'react'
 
@@ -6,11 +7,10 @@ const HomePageLayout = async ({
 
 }: { children: React.ReactNode }) => {
     const user = await requireAuth()
-    console.log(user)
     return (
-        <div>
-            {children}
-        </div>
+       <DashboardShell userEmail={user.email}>
+        {children}
+       </DashboardShell>
     )
 }
 

@@ -40,8 +40,12 @@ export const AuthForm = ({ mode }: { mode: "login" | "register" }) => {
             body: JSON.stringify(payload),
         });
         const data = await response.json().catch(() => null);
-        if (response.ok) {
-            setError("Something went wrong");
+        if (!response.ok) {
+            setError(
+                typeof data?.error === "string"
+                    ? data.error
+                    : "Something went wrong. Check your credentials and try again."
+            );
             setIsPending(false);
             return;
         }
