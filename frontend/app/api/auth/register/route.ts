@@ -1,5 +1,5 @@
 import { setAuthCookie } from "@/lib/auth";
-import { registerWithStrapi } from "@/lib/starpi";
+import { registerWithStrapi } from "@/lib/strapi";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {

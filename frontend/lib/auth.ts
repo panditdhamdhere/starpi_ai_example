@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { AUTH_COOKIE_NAME, fetchCurrentUser } from "@/lib/starpi";
+import { AUTH_COOKIE_NAME, fetchCurrentUser } from "@/lib/strapi";
 
 const AUTH_COOKIE_AGE = 60 * 60 * 24 * 7;
 
