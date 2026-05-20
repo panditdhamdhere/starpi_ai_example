@@ -114,7 +114,7 @@ export async function POST(request: Request) {
 
             try {
                 await createMessage(jwt, {
-                    content: assistantText, role: "assistant", conversationDocumentId: finalConversationDocumentId
+                    content: assistantText, role: "assistant", conversationDocumentId: finalConversationDocumentId!
                 })
             } catch (error) {
                 console.error("[chat] Failed to persist assistant message:", error)
