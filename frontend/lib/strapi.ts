@@ -84,7 +84,7 @@ type Many<T> = {
 };
 
 async function strapiCreate<T>(
-  jwt: string,
+  jwt: string | undefined,
   path: string,
   fields: Record<string, unknown>,
 ) {
@@ -133,13 +133,13 @@ export type StrapiConversations = {
 };
 
 export function createConversation(
-  jwt: string,
+  jwt: string | undefined,
   param: { title: string },
 ): Promise<StrapiConversations> {
   return strapiCreate(jwt, "/api/conversation", { title: param.title });
 }
 
-export async function getConversation(jwt: string, documentId: string) {
+export async function getConversation(jwt: string | undefined, documentId: string) {
   try {
     const response = await strapiFetch<One<StrapiConversations>>(
       `/api/conversation/${encodeURIComponent(documentId)}`,
@@ -154,7 +154,7 @@ export async function getConversation(jwt: string, documentId: string) {
 }
 
 export function createMessage(
-  jwt: string,
+  jwt: string | undefined,
   params: { content: string; role: ChatRole; conversationDocumentId: string },
 ): Promise<StrapiMessages> {
   return strapiCreate(jwt, "/api/messages", {
