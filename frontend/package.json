@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.75",
+    "@ai-sdk/react": "^3.0.192",
     "@base-ui/react": "^1.4.1",
     "@radix-ui/react-use-controllable-state": "^1.2.2",
     "@rive-app/react-webgl2": "^4.28.5",

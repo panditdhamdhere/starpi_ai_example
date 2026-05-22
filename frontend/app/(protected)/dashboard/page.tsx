@@ -7,18 +7,4 @@ const page = () => {
   )
 }
 
-
-async function getdata() {
-  const response = getAuthToken();
-
-  try {
-    if (!response) {
-      const data = fetch()
-    await Response({})
-    }
-  } catch (error) {
-    
-  }
-}
-
 export default page
