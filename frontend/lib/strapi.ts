@@ -136,13 +136,13 @@ export function createConversation(
   jwt: string | undefined,
   param: { title: string },
 ): Promise<StrapiConversations> {
-  return strapiCreate(jwt, "/api/conversation", { title: param.title });
+  return strapiCreate(jwt, "/api/conversations", { title: param.title });
 }
 
 export async function getConversation(jwt: string | undefined, documentId: string) {
   try {
     const response = await strapiFetch<One<StrapiConversations>>(
-      `/api/conversation/${encodeURIComponent(documentId)}`,
+      `/api/conversations/${encodeURIComponent(documentId)}`,
       {},
       jwt,
     );
@@ -158,7 +158,7 @@ export function createMessage(
   params: { content: string; role: ChatRole; conversationDocumentId: string },
 ): Promise<StrapiMessages> {
   return strapiCreate(jwt, "/api/messages", {
-    conetent: params.content,
+    content: params.content,
     role: params.role,
     conversation: params.conversationDocumentId,
   });
