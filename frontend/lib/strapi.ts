@@ -163,3 +163,25 @@ export function createMessage(
     conversation: params.conversationDocumentId,
   });
 }
+
+// -------------------Images and Videos ------------------//
+
+export type StrapiImageRecord = {
+  id: number;
+  documentId: string;
+  prompt: string | null;
+  imageUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export function createImageRecord(jwt: string, params: { prompt: string, imageUrl: string }): Promise<StrapiImageRecord> {
+  return strapiCreate(jwt, "/api/images", {
+    prompt: params.prompt,
+    imageUrl: params.imageUrl
+  })
+}
+
+export function listImageRecords(jwt: string): Promise<StrapiImageRecord[]> {
+  return strapiList(jwt, "/api/images", "24")
+}
