@@ -77,6 +77,12 @@
       "relation": "oneToMany",
       "target": "api::image.image",
       "mappedBy": "users_permissions_user"
+    },
+    "videos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::video.video",
+      "mappedBy": "users_permissions_user"
     }
   }
 }

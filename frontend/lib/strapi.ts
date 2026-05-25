@@ -185,3 +185,21 @@ export function createImageRecord(jwt: string, params: { prompt: string, imageUr
 export function listImageRecords(jwt: string): Promise<StrapiImageRecord[]> {
   return strapiList(jwt, "/api/images", "24")
 }
+
+
+export type StrapiVideoRecord = {
+  id: number;
+  documentId: string;
+  prompt: string | null;
+  videoUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+export function createVideoRecord(jwt: string, params: { prompt: string, videoUrl: string }): Promise<StrapiVideoRecord> {
+  return strapiCreate(jwt, "/api/images", {
+    prompt: params.prompt,
+    imageUrl: params.videoUrl
+  })
+}
+
+
