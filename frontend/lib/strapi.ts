@@ -202,4 +202,8 @@ export function createVideoRecord(jwt: string, params: { prompt: string, videoUr
   })
 }
 
+export function listVideoRecords(jwt: string): Promise<StrapiVideoRecord[]> {
+  return strapiList(jwt, "/api/videos", "24")
+}
+
 
