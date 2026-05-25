@@ -61,7 +61,7 @@ export async function POST(request: Request) {
 
   try {
     const result = await generateImage({
-      model: google.image(IMAGE_MODEL),
+      model: google.image("imagen-4.0-ultra-generate-001"),
       prompt,
       n: 1,
       providerOptions: {

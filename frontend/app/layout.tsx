@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 
 const nunitoSans = Nunito_Sans({ subsets: ['latin'], variable: '--font-sans' });
@@ -41,9 +42,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TooltipProvider>
+          {/* <TooltipProvider> */}
             {children}
-          </TooltipProvider>
+            <Toaster />
+          {/* </TooltipProvider> */}
 
         </ThemeProvider>
 
