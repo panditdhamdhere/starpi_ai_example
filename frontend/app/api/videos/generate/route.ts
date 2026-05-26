@@ -65,9 +65,20 @@ export async function POST(request: Request) {
         return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 })
     }
 
-    const body = await request.json()
+    let body: { prompt?: string; aspectRatio?: string; durationSeconds?: unknown };
+    try {
+        body = await request.json()
+    } catch {
+        return Response.json({ error: "Invalid JSON body" }, { status: 400 })
+    }
+
+    const prompt = typeof body.prompt === "string" ? body.prompt.trim() : ""
+    if (!prompt) {
+        return Response.json({ error: "Prompt is required" }, { status: 400 })
+    }
+
     const aspectRatio = parseAspectRatio(body.aspectRatio);
-    const duration = parseDuration(body.duration);
+    const duration = parseDuration(body.durationSeconds);
 
     try {
         const ai = new GoogleGenAI({
@@ -75,7 +86,7 @@ export async function POST(request: Request) {
         })
         let operation = await ai.models.generateVideos({
             model: VIDEO_MODEL,
-            prompt: body.prompt,
+            prompt,
             config: {
                 numberOfVideos: 1, aspectRatio, durationSeconds: duration
             }
@@ -106,7 +117,7 @@ export async function POST(request: Request) {
 
         const videoUrl = await saveGeneratedVideo(ai, generatedVideo)
         const record = await createVideoRecord(jwt, {
-            prompt: body.prompt,
+            prompt,
             videoUrl
         })
 
@@ -114,6 +125,9 @@ export async function POST(request: Request) {
             model: VIDEO_MODEL, documentId: record.documentId, prompt: record.prompt, videoUrl: record.videoUrl
         })
     } catch (error) {
-        return new Response(JSON.stringify({ error: "Failed to generate Videos" }), { status: 500 })
+        console.error("Error generating video:", error)
+        const message =
+            error instanceof Error ? error.message : "Failed to generate video"
+        return Response.json({ error: message }, { status: 500 })
     }
 }

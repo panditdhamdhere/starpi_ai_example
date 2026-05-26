@@ -69,8 +69,8 @@ export function loginWithStrapi(identifier: string, password: string) {
   });
 }
 
-export function fetchCurrentUser(jwt: string) {
-  return strapiFetch("/api/users/me", {}, jwt);
+export function fetchCurrentUser(jwt: string): Promise<StrapiUser> {
+  return strapiFetch<StrapiUser>("/api/users/me", {}, jwt);
 }
 
 /// -------------- Conversations --------------------- ///
@@ -139,6 +139,10 @@ export function createConversation(
   return strapiCreate(jwt, "/api/conversations", { title: param.title });
 }
 
+export function listConversations(jwt: string): Promise<StrapiConversations[]> {
+  return strapiList(jwt, "/api/conversations", "12");
+}
+
 export async function getConversation(jwt: string | undefined, documentId: string) {
   try {
     const response = await strapiFetch<One<StrapiConversations>>(
@@ -194,16 +198,36 @@ export type StrapiVideoRecord = {
   videoUrl: string | null;
   createdAt: string;
   updatedAt: string;
-}
-export function createVideoRecord(jwt: string, params: { prompt: string, videoUrl: string }): Promise<StrapiVideoRecord> {
-  return strapiCreate(jwt, "/api/videos", {
-    prompt: params.prompt,
-    videoUrl: params.videoUrl
-  })
+};
+
+/** Strapi schema uses capital `Prompt` on the video content-type. */
+type StrapiVideoRecordRaw = Omit<StrapiVideoRecord, "prompt"> & {
+  Prompt?: string | null;
+  prompt?: string | null;
+};
+
+function normalizeVideoRecord(raw: StrapiVideoRecordRaw): StrapiVideoRecord {
+  const { Prompt, prompt: promptLower, ...rest } = raw;
+  return {
+    ...rest,
+    prompt: promptLower ?? Prompt ?? null,
+  };
 }
 
-export function listVideoRecords(jwt: string): Promise<StrapiVideoRecord[]> {
-  return strapiList(jwt, "/api/videos", "24")
+export async function createVideoRecord(
+  jwt: string,
+  params: { prompt: string; videoUrl: string },
+): Promise<StrapiVideoRecord> {
+  const raw = await strapiCreate<StrapiVideoRecordRaw>(jwt, "/api/videos", {
+    Prompt: params.prompt,
+    videoUrl: params.videoUrl,
+  });
+  return normalizeVideoRecord(raw);
+}
+
+export async function listVideoRecords(jwt: string): Promise<StrapiVideoRecord[]> {
+  const rows = await strapiList<StrapiVideoRecordRaw>(jwt, "/api/videos", "24");
+  return rows.map(normalizeVideoRecord);
 }
 
 

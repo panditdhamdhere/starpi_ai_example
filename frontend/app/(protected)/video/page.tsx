@@ -23,6 +23,11 @@ type generateResponse = {
   model: string;
 };
 
+const ASPECT_OPTIONS: { value: string; label: string }[] = [
+  { value: "16:9", label: "16:9 — Wide" },
+  { value: "9:16", label: "9:16 — Tall" },
+];
+
 const DURATION_OPTIONS: { value: string; label: string }[] = [
   { value: "4", label: "4 seconds" },
   { value: "6", label: "6 seconds" },
@@ -75,11 +80,18 @@ const page = () => {
       });
 
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(
+          typeof data?.error === "string" ? data.error : "Failed to generate video",
+        );
+      }
       setPreview(data.videoUrl);
       toast.success("Video is ready");
       await loadGallery();
     } catch (error) {
-      toast.error("error generating Video");
+      toast.error(
+        error instanceof Error ? error.message : "Error generating video",
+      );
     } finally {
       setIsGenerating(false);
     }
@@ -125,13 +137,29 @@ const page = () => {
               disabled={isGenerating}
             />
           </div>
-          <div className="grid gap-2 sm:w-52">
-            <Label htmlFor="aspect">Aspect Ratio</Label>
+          <div className="grid gap-2 sm:w-40">
+            <Label htmlFor="aspect">Aspect ratio</Label>
             <select
               id="aspect"
-              className="border-input bg-background h-9 w-full rounded-md border px-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-/50"
+              className="border-input bg-background h-9 w-full rounded-md border px-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
               value={aspectRatio}
               onChange={(e) => setAspectRatio(e.target.value)}
+              disabled={isGenerating}
+            >
+              {ASPECT_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="grid gap-2 sm:w-40">
+            <Label htmlFor="duration">Duration</Label>
+            <select
+              id="duration"
+              className="border-input bg-background h-9 w-full rounded-md border px-2 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              value={durationSeconds}
+              onChange={(e) => setDurationSeconds(e.target.value)}
               disabled={isGenerating}
             >
               {DURATION_OPTIONS.map((o) => (
@@ -181,7 +209,7 @@ const page = () => {
               <div className="bg-background/70 absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 backdrop-blur-sm">
                 <Loader className="text-primary size-10 animate-spin" />
                 <p className="text-muted-foreground text-sm">
-                  Generating your image...
+                  Generating your Video...
                 </p>
               </div>
             </>
@@ -189,7 +217,7 @@ const page = () => {
           {!isGenerating && !preview && (
             <div className="text bg-muted-foreground flex min-h-72 w-full flex-col items-center justify-center gap-2 px-6 text-center text-sm">
               <VideoIcon className={"size-10 opacity-50"} />
-              <span> Your new Image will show here</span>
+              <span> Your new Video will show here</span>
             </div>
           )}
           {preview && !isGenerating && (

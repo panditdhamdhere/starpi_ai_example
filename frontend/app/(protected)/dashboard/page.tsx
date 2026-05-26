@@ -1,10 +1,27 @@
-import { getAuthToken } from '@/lib/auth'
-import React from 'react'
+import { DashboardOverview } from "@/components/dashboard/dashboard-overview";
+import { getAuthToken, requireAuth } from "@/lib/auth";
+import {
+  listConversations,
+  listImageRecords,
+  listVideoRecords,
+} from "@/lib/strapi";
 
-const page = () => {
+export default async function DashboardPage() {
+  const user = await requireAuth();
+  const jwt = await getAuthToken();
+
+  const [conversations, images, videos] = await Promise.all([
+    jwt ? listConversations(jwt).catch(() => []) : [],
+    jwt ? listImageRecords(jwt).catch(() => []) : [],
+    jwt ? listVideoRecords(jwt).catch(() => []) : [],
+  ]);
+
   return (
-    <div>page</div>
-  )
+    <DashboardOverview
+      user={user}
+      conversations={conversations}
+      images={images}
+      videos={videos}
+    />
+  );
 }
-
-export default page

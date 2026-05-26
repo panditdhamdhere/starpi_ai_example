@@ -5,7 +5,7 @@ export async function GET() {
   const jwt = await getAuthToken();
   const user = await getCurrentUser();
 
-  if (!jwt && !user) {
+  if (!jwt || !user) {
     return new Response(JSON.stringify({ error: "unauthorised" }), {
       status: 401,
     });

@@ -76,11 +76,18 @@ const page = () => {
       });
 
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(
+          typeof data?.error === "string" ? data.error : "Failed to generate image",
+        );
+      }
       setPreview(data.imageUrl);
       toast.success("Image ready");
       await loadGallery();
     } catch (error) {
-      toast.error("error generating image");
+      toast.error(
+        error instanceof Error ? error.message : "Error generating image",
+      );
     } finally {
       setIsGenerating(false);
     }

@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { getAuthToken, getCurrentUser } from "@/lib/auth";
 import { createImageRecord, StrapiError } from "@/lib/strapi";
 
-const IMAGE_MODEL = "gemini-3.1-flash-image-preview";
+const IMAGE_MODEL = "gemini-2.5-flash-image";
 type GoogleImageAspectRatio = "1:1" | "3:4" | "4:3" | "9:16" | "16:9";
 
 const ASPECT_RATIO: GoogleImageAspectRatio[] = [
@@ -54,19 +54,28 @@ export async function POST(request: Request) {
     });
   }
 
-  const body = await request.json();
-  const { prompt, aspectRatio } = body;
+  let body: { prompt?: string; aspectRatio?: string };
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
 
-  const parsedAspectRatio = parseAspectRatio(aspectRatio);
+  const prompt = typeof body.prompt === "string" ? body.prompt.trim() : "";
+  if (!prompt) {
+    return Response.json({ error: "Prompt is required" }, { status: 400 });
+  }
+
+  const parsedAspectRatio = parseAspectRatio(body.aspectRatio);
 
   try {
     const result = await generateImage({
-      model: google.image("imagen-4.0-ultra-generate-001"),
+      model: google.image(IMAGE_MODEL),
       prompt,
       n: 1,
       providerOptions: {
         google: {
-          aspectRatio,
+          aspectRatio: parsedAspectRatio,
         },
       },
     });
@@ -85,8 +94,8 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Error generating Image", error);
-    return new Response(JSON.stringify({ error: "Failed to generate Image" }), {
-      status: 500,
-    });
+    const message =
+      error instanceof Error ? error.message : "Failed to generate image";
+    return Response.json({ error: message }, { status: 500 });
   }
 }

@@ -6,10 +6,11 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/ui/mode-toggle"
-import { MessageCircle, Code, ImageIcon, VideoIcon, LogOut as LogOutIcon, User } from "lucide-react"
+import { MessageCircle, Code, ImageIcon, VideoIcon, LogOut as LogOutIcon, User, LayoutDashboard } from "lucide-react"
 import { logoutAction } from "@/actions/auth"
 
 const nav = [
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/chat", label: "Chat", icon: MessageCircle },
     { href: "/code", label: "Code", icon: Code },
     { href: "/image", label: "Image", icon: ImageIcon },
@@ -31,7 +32,7 @@ export function DashboardShell({ userEmail, children }: DashboardShellProps) {
             <aside className="flex w-[210px] shrink-0 flex-col border-r border-border bg-background">
 
                 {/* Logo */}
-                <div className="flex items-center gap-2.5 px-4 py-[18px]">
+                <Link href="/dashboard" className="flex items-center gap-2.5 px-4 py-[18px] transition-opacity hover:opacity-90">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M8 3v10M3 8h10" stroke="white" strokeWidth="2" strokeLinecap="round" />
@@ -41,7 +42,7 @@ export function DashboardShell({ userEmail, children }: DashboardShellProps) {
                     <span className="text-[15px] font-semibold tracking-tight text-foreground">
                         AIverse
                     </span>
-                </div>
+                </Link>
 
                 {/* Nav links */}
                 <nav className="flex flex-1 flex-col gap-0.5 px-2">

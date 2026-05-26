@@ -1,6 +1,10 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { AUTH_COOKIE_NAME, fetchCurrentUser } from "@/lib/strapi";
+import {
+  AUTH_COOKIE_NAME,
+  fetchCurrentUser,
+  type StrapiUser,
+} from "@/lib/strapi";
 
 const AUTH_COOKIE_AGE = 60 * 60 * 24 * 7;
 
@@ -29,7 +33,7 @@ export async function getAuthToken() {
   return cookieStore.get(AUTH_COOKIE_NAME)?.value;
 }
 
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<StrapiUser | null> {
   const token = await getAuthToken();
 
   if (!token) {
@@ -43,7 +47,7 @@ export async function getCurrentUser() {
   }
 }
 
-export async function requireAuth(redirectTo = "/login") {
+export async function requireAuth(redirectTo = "/login"): Promise<StrapiUser> {
   const user = await getCurrentUser();
 
   if (!user) {
