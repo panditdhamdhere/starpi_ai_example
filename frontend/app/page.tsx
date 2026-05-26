@@ -1,14 +1,8 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { HomePage } from "@/components/marketing/home-page";
+import { getCurrentUser } from "@/lib/auth";
 
-export default function Home() {
-  return (
+export default async function Home() {
+  const user = await getCurrentUser();
 
-    <div>
-      <Button variant={"destructive"}>
-        hello ai
-      </Button>
-    </div>
-
-  );
+  return <HomePage isAuthenticated={!!user} />;
 }
