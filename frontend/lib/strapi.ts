@@ -196,9 +196,9 @@ export type StrapiVideoRecord = {
   updatedAt: string;
 }
 export function createVideoRecord(jwt: string, params: { prompt: string, videoUrl: string }): Promise<StrapiVideoRecord> {
-  return strapiCreate(jwt, "/api/images", {
+  return strapiCreate(jwt, "/api/videos", {
     prompt: params.prompt,
-    imageUrl: params.videoUrl
+    videoUrl: params.videoUrl
   })
 }
 
